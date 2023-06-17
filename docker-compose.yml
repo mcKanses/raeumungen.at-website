@@ -1,0 +1,19 @@
+services:
+
+  composer:
+    build:
+      context: .
+      dockerfile: .docker/composer/Dockerfile
+    container_name: composer
+    hostname: composer
+    volumes:
+      - ./wordpress:/wp/bedrock
+    
+  wp-cli:
+    build:
+      context: .
+      dockerfile: .docker/wp-cli/Dockerfile
+    container_name: wp-cli
+    hostname: wp-cli
+    volumes:
+      - ./wordpress:/var/www/html/bedrock
