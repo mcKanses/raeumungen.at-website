@@ -5,15 +5,32 @@ services:
       context: .
       dockerfile: .docker/composer/Dockerfile
     container_name: composer
+    env_file:
+      - .env
     hostname: composer
     volumes:
-      - ./wordpress:/wp/bedrock
-    
-  wp-cli:
+      - ./wordpress:/wp-app/bedrock
+      # - ./.env:/wp-app/bedrock/.env
+
+  mariadb:
+    container_name: wp-db
+    env_file: .env
+    environment:
+      - MARIADB_DATABASE=$DB_NAME
+      - MARIADB_USER=$DB_USER
+      - MARIADB_PASSWORD=$DB_PASSWORD
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+    hostname: wp-db
+    image: mariadb:11
+
+  apache:
     build:
       context: .
-      dockerfile: .docker/wp-cli/Dockerfile
-    container_name: wp-cli
-    hostname: wp-cli
+      dockerfile: .docker/apache/Dockerfile
+    ports:
+      - 80:80
+      - 443:443
     volumes:
-      - ./wordpress:/var/www/html/bedrock
+      - ./wordpress:/var/www/html
+      - ./.docker/apache/raeumungen.at.conf:/etc/apache2/sites-available/000-default.conf
+
