@@ -9,7 +9,10 @@ services:
       - .env
     hostname: composer
     volumes:
-      - ./wordpress:/wp-app/bedrock
+      - ./wordpress:/wp-app
+      # - /wp-app/bedrock/vendor/
+      # - /wp-app/bedrock/web/app/themes/sage/vendor/
+      # - /wp-app/bedrock/web/app/themes/sage/node_modules/
       # - ./.env:/wp-app/bedrock/.env
 
   mariadb:
@@ -32,5 +35,8 @@ services:
       - 443:443
     volumes:
       - ./wordpress:/var/www/html
+      # - /var/www/html/vendor/
+      # - /var/www/html/web/app/themes/sage/vendor/
+      # - /var/www/html/web/app/themes/sage/node_modules/
       - ./.docker/apache/raeumungen.at.conf:/etc/apache2/sites-available/000-default.conf
 
