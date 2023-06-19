@@ -1,5 +1,6 @@
 FROM wordpress:php8.2-apache
 
+
 RUN apt-get update -y && \
     apt-get install -y \
         libzip-dev \
@@ -25,4 +26,24 @@ RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr
     && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt update && apt-get install yarn -y
 
+WORKDIR /var/www/html/bedrock
+
+COPY wordpress/composer.json .
+COPY wordpress/composer.lock .
+
+RUN composer install
+
+WORKDIR /var/www/html/bedrock/web/app/themes/sage
+
+COPY wordpress/web/app/themes/sage/composer.json .
+COPY wordpress/web/app/themes/sage/composer.lock .
+COPY wordpress/web/app/themes/sage/package.json .
+COPY wordpress/web/app/themes/sage/yarn.lock .
+
+RUN composer install && yarn
+
+WORKDIR /var/www/html
+
 COPY wordpress/. bedrock/.
+
+RUN chown -R www-data:www-data bedrock/
