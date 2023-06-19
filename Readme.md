@@ -6,7 +6,7 @@ docker compose up --build -d
 # run dev server
 docker exec -it wordpress bash
 cd bedrock/web/app/themes/sage
-yarn dev
+yarn build && yarn dev
 
 # Shutdown the container
 docker compose down
