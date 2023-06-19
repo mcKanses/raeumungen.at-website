@@ -1,0 +1,34 @@
+services:
+
+  wordpress:
+    build:
+      context: .
+      dockerfile: .docker/wordpress/Dockerfile
+    command: apache2-foreground
+    container_name: wordpress
+    env_file:
+      - .env
+    environment:
+      - WATCHPACK_POLLING=true
+      - WDS_SOCKET_PORT=0
+    hostname: wordpress
+    ports:
+      - 80:80
+      - 443:443
+      - 3000:3000
+    volumes:
+      - ./wordpress:/var/www/html/bedrock
+      - /var/www/html/bedrock/vendor
+      - /var/www/html/bedrock/web/app/themes/sage/vendor
+      - /var/www/html/bedrock/web/app/themes/sage/node_modules
+      - ./.docker/wordpress/apache.conf:/etc/apache2/sites-enabled/000-default.conf
+
+  mysql:
+    container_name: mysql
+    hostname: mysql
+    environment:
+      MYSQL_DATABASE: $DB_NAME
+      MYSQL_USER: $DB_USER
+      MYSQL_PASSWORD: $DB_PASSWORD
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+    image: mysql:8
